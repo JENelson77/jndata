@@ -1,2 +1,2 @@
 # jndata
-MOOC data projects
+Various data projects
