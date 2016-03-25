@@ -1,0 +1,82 @@
+## this is analysis for the response to AJG review 
+##logistic regression of defNASH model inc season and metsyn variables
+model <- glm(defNASH ~ D3DEF+season+agebx+bmi+race+alt+male+diab2 +metsyn, family="binomial", data= vdddata)
+summary(model)
+
+## odds ratios and 95% CI
+exp(cbind(OR = coef(model), confint(model)))
+anyfibmod <- glm(anyfib ~ D3DEF+season+agebx+bmi+race+alt+male+diab2 +metsyn, family="binomial", data= vdddata)
+summary(anyfibmod)
+
+## ordinal regression for NASH features
+NASmod<- polr(fNAS ~ D3DEF+season+agebx+bmi+race+alt+male+diab2 +metsyn, data= vdddata, Hess=T)
+fNAS<-factor(vdddata$NAS)
+summary(NASmod)
+
+## store table
+(ctable <- coef(summary(LImod)))
+
+## calculate and store p values
+p <- pnorm(abs(ctable[, "t value"]), lower.tail = FALSE) * 2
+
+## combined table
+(ctable <- cbind(ctable, "p value" = p))
+
+(ci <- confint(LImod)) # default method gives profiled CIs
+## OR and CI
+exp(cbind(OR = coef(NASmod), ci))
+
+ballmod<- polr(fball ~ D3DEF+season+agebx+bmi+race+alt+male+diab2 +metsyn, data= vdddata, Hess=T)
+summary(ballmod)
+
+LImod<- polr(fLI ~ D3DEF+season+agebx+bmi+race+alt+male+diab2 +metsyn, data= vdddata, Hess=T)
+summary(LImod)
+
+## answer to reviewer 2 to look at sunlight and dietVD3
+model2 <- glm(defNASH ~ mean.sunlight, family="binomial", data= vdddata)
+summary(model2)
+## odds ratios and 95% CI
+exp(cbind(OR = coef(NASmod), confint(NASmod)))
+dietD3<-vdddata$diet_vitD
+
+model5 <- glm(anyfib ~ mean.sunlight, family="binomial", data= vdddata)
+summary(model5)
+## odds ratios and 95% CI
+exp(cbind(OR = coef(model5), confint(model5)))
+
+LImod3 <- polr(fLI ~dietD3, data= vdddata, Hess=T)
+summary(LImod3)
+## store table
+(ctable <- coef(summary(LImod3)))
+
+## calculate and store p values
+p <- pnorm(abs(ctable[, "t value"]), lower.tail = FALSE) * 2
+
+## combined table
+(ctable <- cbind(ctable, "p value" = p))
+
+(ci <- confint(LImod3)) # default method gives profiled CIs
+## OR and CI
+exp(cbind(OR = coef(LImod3), ci))
+
+## odds ratios and 95% CI
+exp(cbind(OR = coef(anyfibmod), confint(anyfibmod))
+)
+aggdata <-aggregate(vdddata, by=list(vdddata$D3DEF, vdddata$defNASH), FUN=mean, na.rm=TRUE)
+print(aggdata)
+
+
+## power calculation based on VD3 levels between NASH v not NASH
+by(vdddata$D3, vdddata$defNASH, mean, sd)
+by(vdddata$D3, vdddata$defNASH, sd)
+poolsqrt<-sqrt((9.69^2 + 10.01^2)/2)
+poolsqrt
+library(pwr)
+pwr.t.test(d=(1.418)/poolsqrt,power=.8,sig.level=.05,type="two.sample",alternative="two.sided")
+levels(vdddata$defNASH)
+var(vdddata$D3)
+d=(21.68974-20.27143)/97.60895
+d
+pwr.t2n.test(n1 =78 , n2= 112, d  , sig.level =.05, power = )
+help(pwr.f2.test)
+pwr.f2.test(u = 14, v = 181, f2 = 0.15, sig.level = 0.05, power = )
