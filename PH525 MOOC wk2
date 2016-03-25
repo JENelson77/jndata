@@ -1,0 +1,123 @@
+dim dat
+class(dat)
+dat<- read.csv("femaleMiceWeights.csv")
+dim dat
+class(dat)
+dim(dat)
+dat[1:12, 2]
+mean(dat[13:24, 2]) - mean (dat[1:12, 2]
+s = split(dat[,2], dat[,1])
+stripchart(s, vertical=TRUE, col=1:2)
+abline(h=sapply(s, mean), col=1:2)
+sum(dat[1:12,2] > mean(dat[13:24,2]))
+s[["hf"]]
+highfat= s[["hf"]]
+highfat
+sample(highfat,6)
+sum(highfat > 30)
+mean(highfat>30)
+population <- read.csv("femaleControlsPopulation.csv")
+
+
+control<- sample(population[,1], 12)
+mean(control)
+n<-10000
+null <- vector("numeric", n)
+for(i in 1:n){
+  control<-sample(population[,1], 12)
+  treatment <-sample(population[,1], 12)
+  null[i]<-mean(treatment)- mean(control)
+}
+diff<- mean(dat[13:24, 2]) - mean(dat[1:12, 2])
+mean (null>diff)
+head(population)
+population = population[,1]
+mean(population)
+sampleMean = replicate(10000, mean(sample(population, 12)))
+head(sampleMean)
+plot(sampleMean)
+null = replicate(10000, mean(sample(population, 12)) - mean(sample(population, 12)))
+head(null)
+plot(null)
+hist(null)
+abline(v=diff, col="red")
+abline(v=-diff, col="red")
+plot(mean)
+mean(null > abs(diff))
+mean(null >= abs(diff))
+mean(null > abs(-diff))
+mean(null > abs(diff)+ abs(-diff))
+mean(null > -diff)
+mean(abs(null) > abs(diff))
+#week 2 section 2
+library(devtools)
+install_github("jennybc/gapminder")
+library(gapminder)
+data(gapminder)
+head(gapminder)
+gap<- gapminder
+head(gap)
+#question 1.1
+s= split (gap$country, gap$year)
+s
+s[["1952"]]
+s= split (gap$lifeExp, gap$year)
+s
+hist(s[["1952"]])
+x<- s[["1952"]]
+x
+mean(x <= 40)
+a=x<=40
+mean(a)
+#question 1.2
+mean((x<=60)-(a))
+prop = function(q) {
+  mean(x <= q)
+}
+qs = seq(from=min(x), to=max(x), length=20)
+qs
+props = sapply(qs, prop)
+colnames (gap)
+?==
+#question 2.1
+  s2=split (gap$pop, gap$year)
+p=s2[["1952"]]
+hist(p)
+log10p=log10(p)
+hist(log10p)
+sd(log10p)
+#question 2.2
+qqnorm(log10p)
+z=(log10p-mean(log10p))/sd(log10p)
+qqnorm(z)
+max(z)
+lapply(z, gap$country)
+z
+sort(z)
+order(z)
+x<-log10p
+#question2.3
+F = function(q) pnorm(q, mean=mean(x), sd=sd(x))
+F(6)
+n = length(x)
+F(6&<=7)
+c=F(6)
+c
+c*n
+sum(x > 6 & x <= 7)
+d=F(7)
+d
+d*n
+d-c
+(d-c)*n
+#easiest way was to write -> n * (F(7) - F(6))
+# question 2.4
+head(pnorm(x, mean=mean(x), sd=sd(x)))
+mean(z)
+sd(z)
+head(pnorm(z))
+qqnorm(x)
+ps = ((1:n) - 0.5)/n
+qnorm(ps)
+sort(x)
+plot(qnorm(ps), sort(x))
