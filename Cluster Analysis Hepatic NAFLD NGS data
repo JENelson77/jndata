@@ -1,0 +1,86 @@
+---
+title: "Unsupervised ML Hepatic NAFLD NGS data"
+author: "Jim Nelson"
+date: "March 20, 2015"
+output: html_document
+---
+
+## Read in csv Ensembl count file
+```{r}
+curData <- read.csv (file= "..Users/Jim/Shiny Apps/NAFLD/Ensembl defNASH GE shiny.csv")
+dim(curData)
+curData$defNASH<-factor(curData$defNASH, levels=c(0,1))
+curData[1:5,1:5]
+```
+
+## Create count matrix, assign design data
+```{r}
+rawCounts<-curData[2:nrow(curData), 2:ncol(curData)]
+rownames(rawCounts)<-as.character(curData[2:nrow(curData),1])
+designData<-t(curData[1,2:ncol(curData)])
+colnames(designData)<-as.character(curData[1,1])
+table(designData[,1])
+designData<-as.data.frame(designData)
+
+rawCounts<-as.matrix(rawCounts)
+```
+
+##remove rows with null values
+```{r}
+remRows<-which(apply(rawCounts, 1, sum)==0)
+
+rawCountsSub<-rawCounts[-remRows,]
+
+length(remRows)
+
+countsCompare1<-rawCountsSub
+designData1<-designData
+colnames(designData1)
+
+colnames(designData1)[1]<-"defNASH"
+
+```
+
+## hierarchical cluster
+
+```{r}
+d<- dist(t(countsCompare1))
+hc<-hclust(d)
+hc
+plot(hc,cex=0.5)
+
+```
+
+##k-means clustering
+```{r}
+set.seed(1)
+km <- kmeans(t(countsCompare1), centers=3)
+names(km)
+e<- countsCompare1
+mds <- cmdscale(d)
+
+mypar(1,2)
+plot(mds[,1], mds[,2]) 
+plot(mds[,1], mds[,2], col=km$cluster, pch=16)
+```
+
+## heatmap
+```{r}
+library(RColorBrewer) 
+hmcol <- colorRampPalette(brewer.pal(9, "GnBu"))(100)
+library(genefilter)
+
+rv <- rowVars(e)
+idx <- order(-rv)[50:100]
+```
+
+```{r}
+install.packages("gplots")
+library(gplots) ##Available from CRAN
+cols <- palette(brewer.pal(8, "Dark2"))
+head(cbind(colnames(e),cols))
+
+heatmap.2(e[idx,], labCol=,
+          trace="none" )
+        
+```
