@@ -1,13 +1,14 @@
 ---
+---
 title: "Unsupervised ML Hepatic NAFLD NGS data"
 author: "Jim Nelson"
-date: "March 20, 2015"
+date: "November 20, 2014"
 output: html_document
 ---
 
 ## Read in csv Ensembl count file
 ```{r}
-curData <- read.csv (file= "..Users/Jim/Shiny Apps/NAFLD/Ensembl defNASH GE shiny.csv")
+curData <-read.csv (file= "C:/Users/Jim/NAFLD GE  R files/P68A Ensembl defNASH labeled.csv")
 dim(curData)
 curData$defNASH<-factor(curData$defNASH, levels=c(0,1))
 curData[1:5,1:5]
@@ -84,3 +85,8 @@ heatmap.2(e[idx,], labCol=,
           trace="none" )
         
 ```
+
+
+
+
+
