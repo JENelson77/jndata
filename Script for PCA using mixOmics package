@@ -1,0 +1,26 @@
+## install and load "mixOmics" package for cluster analysis of NGS data 
+install.packages("mixOmics")
+library(mixOmics)
+
+##Read in the data
+curData <- read.csv (file= "C:/Users/Jim/NAFLD GE  R files/SERUM miR DATASET NAFLD.csv")
+dim(curData)
+curData[1:5,1:5]
+str(curData)
+
+#create the count matrix and remove the label column
+rawCounts<-curData[2:2019 ,2:ncol(curData)]
+head(rawCounts)
+str(rawCounts)
+
+#conver the rawCounts DF into a numeric matrix
+countsCompare1 = as.matrix(as.data.frame(lapply(countsCompare1, as.numeric)))
+
+# transform the matrix for PCA on 
+countsCompare1 <- t(countsCompare1) 
+pcaplot<-pca(countsCompare1)
+class(countsCompare1)
+
+#data plots
+plot(pcaplot)
+plotIndiv(pcaplot)
