@@ -1,0 +1,77 @@
+---
+title: "Hepatic NGS GE Dataset PCA"
+author: "Jim Nelson"
+date: "December 12, 2014"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### install and load "mixOmics" package for cluster analysis of NGS data 
+
+```{r}
+install.packages("mixOmics")
+library(mixOmics)
+```
+
+##Read in the data
+
+```{r}
+curData <- read.csv (file= "C:/Users/Jim/NAFLD GE  R files/P68A Ensembl defNASH labeled.csv")
+dim(curData)
+curData[1:5,1:5]
+str(curData)
+
+```
+
+
+###create the count matrix and remove the label column
+
+```{r}
+rawCounts<-curData[2:nrow(curData) ,2:ncol(curData)]
+head(rawCounts)
+class(rawCounts)
+```
+
+##remove rows with null values
+```{r}
+remRows<-which(apply(rawCounts, 1, sum)==0)
+
+rawCountsSub<-rawCounts[-remRows,]
+
+length(remRows)
+
+countsCompare1<-rawCountsSub
+
+designData1<-designData
+colnames(designData1)
+
+colnames(designData1)[1]<-"miR"
+
+
+```
+
+###conver the rawCounts DF into a numeric matrix
+```{r}
+countsCompare1 = as.matrix(as.data.frame(lapply(countsCompare1, as.numeric)))
+```
+
+
+### transform the matrix for PCA on 
+```{r}
+countsCompare1 <- t(countsCompare1) 
+pcaplot<-pca(countsCompare1, ncomp = 2,
+center = TRUE,
+scale = T)
+class(countsCompare1)
+```
+
+#data plots
+```{r}
+loadings(pcaplot)
+plot(pcaplot)
+plotIndiv(pcaplot)
+
+```
