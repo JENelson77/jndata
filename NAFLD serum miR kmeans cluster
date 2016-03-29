@@ -1,0 +1,50 @@
+## Read in csv Ensembl count file
+```{r}
+curData <- read.csv (file= "C:/Users/Jim/NAFLD GE  R files/SERUM miR DATASET NAFLD.csv")
+dim(curData)
+curData[1:5,1:5]
+```
+
+## Create count matrix, assign design data
+```{r}
+rawCounts<-curData[2:2019 ,2:46]
+rownames(rawCounts)<-as.character(curData[2:2019,1])
+designData<-t(curData[1,2:24])
+colnames(designData)<-as.character(curData[1,1])
+table(designData[,1])
+designData<-as.data.frame(designData)
+rawCounts<-as.matrix(rawCounts)
+
+dim(rawCounts)
+str(rawCounts)
+```
+
+##remove rows with null values
+```{r}
+remRows<-which(apply(rawCounts, 1, sum)==0)
+
+rawCountsSub<-rawCounts[-remRows,]
+
+length(remRows)
+
+countsCompare1<-rawCountsSub
+
+designData1<-designData
+colnames(designData1)
+
+colnames(designData1)[1]<-"miR"
+
+```
+
+
+## kmeans
+```{r}
+set.seed(57)
+tCounts <- t(countsCompare1)
+
+par(mar=c(4, 4, 4, 4))
+
+km <- kmeans(tCounts,4, iter.max=10,nstart = 1)
+
+# Generate a discriminant coordinates plot.
+plot(tCounts, col = km$cluster, pch = 16,  main="Discriminant Coordinates kmeans NAFLD serum miRs", axes = TRUE)
